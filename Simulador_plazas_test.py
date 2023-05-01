@@ -76,6 +76,7 @@ while True:
     
     if opositor_actual.ciudad_plaza == opositor_actual.ciudad_asignada and opositor_actual.hospital_plaza == opositor_actual.hospital_asignado and opositor_actual.especialidad_deseada == opositor_actual.especialidad_asignada:
         continuar2 = input("\nTienes asignada la plaza que indicaste como más prioritaria. ¿Quieres cambiar de prioridad y comprobar si la nueva plaza está disponible? ")
+
         if continuar2 == "Si" or continuar2 == "si":
             print("\nIntroduce los datos de tu siguiente plaza más prioritaria: ")
             ciudad = input("\nCiudad: ")
@@ -83,23 +84,27 @@ while True:
             especialidad = input("Especialidad: ")
             opositor_actual.update_info(opositor_actual.nombre, opositor_actual.apellidos, ciudad, hospital, especialidad)
             opositores[posicion]=opositor_actual
+
+            for plaza in lista_plazas:
+                if opositor_actual.ciudad_asignada == plaza.ciudad and opositor_actual.hospital_asignado == plaza.hospital and opositor_actual.especialidad_asignada == plaza.especialidad and opositor_actual.posicion == plaza.asignacion:
+                    plaza.asignacion = 0
             continue
         else: break
 
-    continuar = input("\n ¿Es correcta esta información? ")
+    continuar = input("\n¿Es correcta esta información? ")
     if continuar == "Si" or continuar == "si" :
         for plaza in lista_plazas:
             if plaza.ciudad == opositor_actual.ciudad_plaza and plaza.hospital == opositor_actual.hospital_plaza and plaza.especialidad == opositor_actual.especialidad_deseada and (plaza.asignacion == 0 or plaza.asignacion > opositor_actual.posicion):
+
                 respuesta = input("\nTu plaza está disponible. ¿Deseas que se te asigne? ")
                 if respuesta == "si" or respuesta == "Si":
-                    if plaza.asignacion != 0:
-                        for opositor in opositores:
-                            if opositor.posicion == plaza.asignacion:
-                                del opositor.ciudad_asignada  
-                                del opositor.hospital_asignado
-                                del opositor.especialidad_asignada
-                                plaza.asignacion = 0
-                
+                    
+                    for opositor in opositores:
+                        if plaza.asignacion != 0 and opositor.posicion == plaza.asignacion:
+                            opositor.ciudad_asignada = None
+                            opositor.hospital_asignado = None
+                            opositor.especialidad_asignada = None
+                 
                     plaza.asignacion = opositor_actual.posicion
                     opositor_actual.update_plaza(plaza.ciudad, plaza.hospital, plaza.especialidad)
                     print("\n")
@@ -171,7 +176,7 @@ while True:
                                     worksheet2.cell(row=row, column=4, value=plaza.asignacion).alignment = Alignment(horizontal='center')
                                     row += 1
                                 workbook2.save(filename='Plazas.xlsx')
-                                
+
                                 plaza_ocupada = False
                                 print("\nLos archivos con el listado de opositores y de plazas se han actualizado")
 
@@ -182,11 +187,14 @@ while True:
         break
 
     else: 
-        nombre = input("\nIntroduce tu nombre: ")
-        apellido = input("Introduce tu apellido: ")
-        ciudad = input("Introduce los datos de la plaza que deseas:\nCiudad: ")
+        ciudad = input("\nIntroduce los datos de la plaza que deseas:\nCiudad: ")
         hospital = input("Hospital: ")
         especialidad = input("Especialidad: ")
-        opositor_actual.update_info(nombre, apellido, ciudad, hospital, especialidad)
+        opositor_actual.update_info(opositor_actual.nombre, opositor_actual.apellidos, ciudad, hospital, especialidad)
         opositores[posicion]=opositor_actual
+
+        for plaza in lista_plazas:
+                if opositor_actual.ciudad_asignada == plaza.ciudad and opositor_actual.hospital_asignado == plaza.hospital and opositor_actual.especialidad_asignada == plaza.especialidad and opositor_actual.posicion == plaza.asignacion:
+                    plaza.asignacion = 0
+
         continue
