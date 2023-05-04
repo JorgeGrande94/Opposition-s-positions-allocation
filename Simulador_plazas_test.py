@@ -1,6 +1,7 @@
 import tkinter as tk
 import pandas as pd
 import xlsxwriter
+import openpyxl
 from openpyxl import load_workbook
 from openpyxl.styles import Alignment
 
@@ -55,14 +56,20 @@ class Plaza:
 opositores = []
 lista_plazas = []
 
-lista_opositores = pd.read_excel("Lista_opositores.xlsx", header=1)
-for index, row in lista_opositores.iterrows():
-    opositores.append(Opositor(row['Nombre'], row['Apellidos'], row['Posición'], row['Edad'], row['Ciudad_origen'], row['Ciudad'], row['Hospital'], row['Especialidad'], row['Ciudad:'], row['Hospital:'], row['Especialidad:']))
-
-plazas = pd.read_excel("Plazas.xlsx",header=0)
-for index, row in plazas.iterrows():
-    lista_plazas.append(Plaza(row['Ciudad'], row['Hospital'], row['Especialidad'], row['Asignacion']))
-
+try:
+    lista_opositores = pd.read_excel("Lista_opositores.xlsx", header=1)
+    for index, row in lista_opositores.iterrows():
+        opositores.append(Opositor(row['Nombre'], row['Apellidos'], row['Posición'], row['Edad'], row['Ciudad_origen'], row['Ciudad'], row['Hospital'], row['Especialidad'], row['Ciudad:'], row['Hospital:'], row['Especialidad:']))
+except FileNotFoundError:
+    print("\nEl archivo Excel con la lista de opositores no está disponible. Asegúrate de copiarlo en el directorio desde el cual estás ejecutando este programa")
+ 
+try:
+    plazas = pd.read_excel("Plazas.xlsx",header=0)
+    for index, row in plazas.iterrows():
+        lista_plazas.append(Plaza(row['Ciudad'], row['Hospital'], row['Especialidad'], row['Asignacion']))
+except FileNotFoundError:
+    print("\nEl archivo Excel con la lista de plazas no está disponible. Asegúrate de copiarlo en el directorio desde el cual estás ejecutando este programa")
+        
 while True:
 
     a = int(input("\nIntroduce tu posición: "))
